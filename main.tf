@@ -4,19 +4,19 @@ resource "aws_security_group" "sg" {
   vpc_id      = var.vpc_id
 
   ingress {
-    description      = "APP"
-    from_port        = 8080
-    to_port          = 8080
-    protocol         = "tcp"
-    cidr_blocks      = var.allow_app_cidr
+    description = "APP"
+    from_port   = 8080
+    to_port     = 8080
+    protocol    = "tcp"
+    cidr_blocks = var.allow_app_cidr
   }
 
   ingress {
-    description      = "SSH"
-    from_port        = 22
-    to_port          = 22
-    protocol         = "tcp"
-    cidr_blocks      = var.bastion_cidr
+    description = "SSH"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = var.bastion_cidr
   }
 
   egress {
@@ -37,11 +37,12 @@ resource "aws_launch_template" "lt" {
 }
 
 resource "aws_autoscaling_group" "asg" {
-  name               = "${var.name}-${var.env}"
-  availability_zones = ["us-east-1a"]
-  desired_capacity   = var.desired_capacity
-  max_size           = var.max_size
-  min_size           = var.min_size
+  name                = "${var.name}-${var.env}-asg"
+  desired_capacity    = var.desired_capacity
+  max_size            = var.max_size
+  min_size            = var.min_size
+  vpc_zone_identifier = var.subnet_ids
+
 
   launch_template {
     id      = aws_launch_template.lt.id
